@@ -25,6 +25,9 @@ cap = cv2.VideoCapture(video_id) # Create a video capture object for the webcam
 window = pyglet.window.Window(WINDOW_WIDTH, WINDOW_HEIGHT)
 
 warped_frame = None  # Entzerrtes Spielfeld
+finger_pos = None
+
+score = 0
 
 if len(sys.argv) > 1:
     video_id = int(sys.argv[1])
@@ -72,12 +75,14 @@ def on_key_press(symbol, modifiers):
 
 @window.event
 def on_draw():
-    global warped_frame
+    global warped_frame, finger_pos, score
 
     window.clear()
     ret, frame = cap.read()
     if not ret:
         return
+
+    frame_to_draw = frame
 
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -118,20 +123,47 @@ def on_draw():
             rect[3] = pts[np.argmax(diff)]    # bottom-left
 
             warped = warp_image(frame, rect)
+
+            # Zu zeichnenden Frame auf warped setzen (statt Originalbild)
+            frame_to_draw = warped
+
             warped_frame = warped.copy()
 
             cv2.circle(warped, TARGET_POS, TARGET_RADIUS, TARGET_COLOR, -1)
+
+            # HSV-Farbmodell (Um Hautfarben zu erkennen)
+            hsv_frame = cv2.cvtColor(warped_frame, cv2.COLOR_BGR2HSV)
+
+            # Hautfarbenspektrum festlegen
+            lower_skin = np.array([0, 30, 60], dtype=np.uint8)
+            upper_skin = np.array([20, 150, 255], dtype=np.uint8)
+
+            # Hautfarbenmaske erstellen
+            skincolor_mask = cv2.inRange(hsv_frame, lower_skin, upper_skin)
+
+            # Konturen der Hand finden
+            contours, _ = cv2.findContours(skincolor_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+            # Höchstgelegenen Punkt der Handkontur finden (min von y)
+            if contours:
+                largest_contour = max(contours, key=cv2.contourArea)
+                fingertip = tuple(largest_contour[largest_contour[:,:,1].argmin()][0])
+                finger_pos = fingertip
+            else:
+                finger_pos = None
             
-            img = cv2glet(warped, 'BGR')
-            img.blit(0, 0, 0)
-            return
+            # Falls ein Höchster Punkt erkannt -> Kollisionscheck mit Target
+            if finger_pos is not None:
+                dist = np.linalg.norm(np.array(finger_pos) - np.array(TARGET_POS))
+                if dist < TARGET_RADIUS:
+                    score += 1
+                    print(f"{score}")
         
         except KeyError:
-            # Falls Marker fehlen, Originalbild anzeigen
             pass
 
     # Wenn nicht alle Marker erkannt wurden, Originalbild anzeigen
-    img = cv2glet(frame, 'BGR')
+    img = cv2glet(frame_to_draw, 'BGR')
     img.blit(0, 0, 0)
 
 pyglet.app.run()
