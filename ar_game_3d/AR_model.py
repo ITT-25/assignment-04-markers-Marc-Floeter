@@ -20,6 +20,8 @@ class Model:
         self.batch = pyglet.graphics.Batch()
         self._model = pyglet.model.load(path).create_models(batch=self.batch)[0]
 
+        self.visible = False
+        self.should_spin = False 
 
     def setup_translation(self, marker_id, view_matrix, position, length):
         if marker_id == self._id:
@@ -30,6 +32,10 @@ class Model:
 
     def animate(self):
         try:
+            self._rot_y += 2.0
+            if self._rot_y >= 360:
+                self._rot_y = 0
+
             # translation matrix to set the position of the 3D model within the window
             trans = Mat4.from_translation(Vec3(
                 (self._position[0] - self._win_w/2),

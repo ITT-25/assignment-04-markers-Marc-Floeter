@@ -23,7 +23,7 @@
 - Navigiere in Ordner ```ar_game```
 - Aktiviere Virtual Environment mit ```venv\scripts\activate```
 - Installiere ggf. Abhängigkeiten mit ```pip install -r requirements.txt```
-- Starte Anwendung mit ```python ar_game.py```
+- Starte Anwendung mit ```python AR_game.py```
 
 ## Ingame
 - Halte das Blatt mit den 4 Markern in der Anweisung entsprechend in die Kamera, dann startet das Spiel
@@ -40,3 +40,14 @@
 # 4.3: AR-Game - now 3D
 
 ## Installation und Start
+- Navigiere in Ordner ```ar_game_3d```
+- Aktiviere Virtual Environment mit ```venv\scripts\activate```
+- Installiere ggf. Abhängigkeiten mit ```pip install -r requirements.txt```
+- Starte Anwendung mit ```python AR_sample_3d.py```
+
+# Anwendung
+- Marker IDs habe ich zu 1 und 2 geändert, da ich 4 und 5 verlegt hatte... gerne bei Bedarf ändern
+- Enton wird auf beiden Markern angezeigt, wenn diese erkannt werden (ein 3D-Modell, das auch laden wollte, habe ich auf die paar Minuten, die mir für diese Aufgabe geblieben sind, nicht gefunden)
+- Die Modelle werden nur dann angezeigt, wenn der Marker auch erkannt wurde
+- Sind beide Entons sichtbar, drehen sie sich beide
+- War zuletzt nicht mehr testbar, weil die Kamera bei dieser Rechenauslastung versagt hat...? ("can't grab frame")

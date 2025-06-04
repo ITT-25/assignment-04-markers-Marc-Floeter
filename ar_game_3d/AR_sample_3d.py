@@ -88,6 +88,8 @@ def on_draw():
     global view_matrix, position
     _, frame = cap.read()
 
+    for model in models:
+        model.visible = False
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -110,13 +112,25 @@ def on_draw():
             view_matrix = view_matrix * INVERSE_MATRIX
             view_matrix = np.transpose(view_matrix)
             for model in models:
-                model.setup_translation(marker_id, view_matrix, position, length)
+                if model._id == marker_id:
+                    model.setup_translation(marker_id, view_matrix, position, length)
+                    model.visible = True
+
+    visible_ids = [model._id for model in models if model.visible]
+
+    if 1 in visible_ids and 2 in visible_ids:
+        for model in models:
+            model.should_spin = True
+    else:
+        for model in models:
+            model.should_spin = False
 
     img = cv2glet(frame, 'BGR')
     window.clear()
     img.blit(-WINDOW_WIDTH/2, -WINDOW_HEIGHT/2, 0)
     for model in models:
-            model.batch.draw()
+            if model.visible:
+                model.batch.draw()
 
 
 def animate(dt):
@@ -124,7 +138,8 @@ def animate(dt):
     # global time
     # time += dt
     for model in models:
-        model.animate()    
+        if model.should_spin:
+            model.animate()    
 
 
 # not relevant for us for now
