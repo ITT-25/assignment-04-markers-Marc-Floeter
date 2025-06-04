@@ -1,7 +1,7 @@
 import cv2, os, argparse, sys
 import numpy as np
 
-# Input args parsen
+# Input args parsen, Konstanten setzen
 parser = argparse.ArgumentParser(description="Perspective Image Extractor")
 parser.add_argument("input", help="Pfad zum Eingabebild")
 parser.add_argument("output", help="Pfad zur Ausgabedatei")
@@ -21,7 +21,7 @@ TARGET_CORNERS = np.array([
     [0, TARGET_HEIGHT - 1]
 ], dtype="float32")
 
-PREVIEW_WINDOW_NAME = 'Preview Window'
+PREVIEW_WINDOW_NAME = "Preview Window"
 WARPED_WINDOW_NAME = "Warped"
 
 ORIGINAL_IMAGE = cv2.imread(INPUT_IMG_PATH)
@@ -45,9 +45,9 @@ if not os.path.exists(OUTPUT_DIR):
 # Falls alles mit args ok -> Fenster erstellen
 cv2.namedWindow(PREVIEW_WINDOW_NAME)
 
+
 # Anfangs Originalbild anzeigen
 cv2.imshow(PREVIEW_WINDOW_NAME, ORIGINAL_IMAGE)
-
 
 
 def mouse_callback(event, x, y, flags, param):
