@@ -140,7 +140,8 @@ if __name__ == "__main__":
     glEnable(GL_CULL_FACE)
 
     models = []
-    models.append(Model(path="enton.obj", id=6, win_w=WINDOW_WIDTH, win_h=WINDOW_HEIGHT, rot_x=270, rot_y=90, rot_z=270, scaling_factor=0.2))
+    models.append(Model(path="enton.obj", id=1, win_w=WINDOW_WIDTH, win_h=WINDOW_HEIGHT, rot_x=270, rot_y=90, rot_z=270, scaling_factor=0.2))
+    models.append(Model(path="enton.obj", id=2, win_w=WINDOW_WIDTH, win_h=WINDOW_HEIGHT, rot_x=270, rot_y=90, rot_z=270, scaling_factor=0.2))
 
     # Set the application wide view matrix (camera):
     window.view = Mat4.look_at(position=Vec3(0, 0, WINDOW_Z), target=Vec3(0, 0, 0), up=Vec3(0, 1, 0))
