@@ -3,10 +3,10 @@
 # 4.1: Perspective Transformation
 
 ## Installation und Start
-- Navigiere in Ordner '''perspective_transformation'''
-- Aktiviere Virtual Environment mit '''venv\scripts\activate'''
-- Installiere ggf. Abhängigkeiten mit '''pip install -r requirements.txt'''
-- Starte Anwendung mit '''python image_extractor.py {Input-Bild Pfad} {Output-Bild Pfad} {Gewünschte Breite} {Gewünschte Höhe}'''
+- Navigiere in Ordner ```perspective_transformation```
+- Aktiviere Virtual Environment mit ```venv\scripts\activate```
+- Installiere ggf. Abhängigkeiten mit ```pip install -r requirements.txt```
+- Starte Anwendung mit ```python image_extractor.py {Input-Bild Pfad} {Output-Bild Pfad} {Gewünschte Breite} {Gewünschte Höhe}```
 
 ## Anwendung
 - Wähle die vier Eckpunkte des Bereiches, den du auf den beim Start angegebenen Bereich zerren möchtest (Reihenfolge: Uhrzeigersinn von oben links)
@@ -20,10 +20,10 @@
 # 4.2: AR Game
 
 ## Installation und Start
-- Navigiere in Ordner '''ar_game'''
-- Aktiviere Virtual Environment mit '''venv\scripts\activate'''
-- Installiere ggf. Abhängigkeiten mit '''pip install -r requirements.txt'''
-- Starte Anwendung mit '''python ar_game.py'''
+- Navigiere in Ordner ```ar_game```
+- Aktiviere Virtual Environment mit ```venv\scripts\activate```
+- Installiere ggf. Abhängigkeiten mit ```pip install -r requirements.txt```
+- Starte Anwendung mit ```python ar_game.py```
 
 ## Ingame
 - Halte das Blatt mit den 4 Markern in der Anweisung entsprechend in die Kamera, dann startet das Spiel
