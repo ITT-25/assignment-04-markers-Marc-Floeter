@@ -24,9 +24,9 @@ DARKER_SKINTONE = [0, 30, 60]
 LIGHTER_SKINTONE = [20, 150, 255]
 
 # Kreis um Fingerspitze anzeigen
-FINGER_TRACKPOINT = True 
-
-TARGET_RADIUS = 30
+FINGER_TRACKPOINT = False
+FINGER_TRACKPOINT_RADIUS = 20
+FINGER_TRACKPOINT_COLOR = (0, 255, 0)
 
 # Texturen
 MOSQUITO_TEXTURE = pyglet.image.load("assets/mosquito.png")
@@ -97,20 +97,29 @@ markers_detected = False
 score = 0
 health = START_HEALTH
 mosquitos = []
+mosquito_radius = 10
 balloons = []
+balloon_radius = 10
 game_over = False
 
 
 # TARGET-KLASSEN ########################################################################################
 
 class Mosquito:
+
     def __init__(self):
+        global mosquito_radius
+
         self.x = random.randint(0, WINDOW_WIDTH)
         self.y = random.randint(0, WINDOW_HEIGHT)
         self.vx = random.uniform(-100, 100)
         self.vy = random.uniform(-100, 100)
         self.sprite = pyglet.sprite.Sprite(MOSQUITO_TEXTURE, x=self.x, y=self.y, batch=batch)
         self.sprite.scale = 0.05
+        self.center_x = self.x + self.sprite.width / 2
+        self.center_y = self.y + self.sprite.height / 2
+        mosquito_radius = max(self.sprite.width / 2, self.sprite.height / 2)
+
 
     def update(self, dt):
         self.x += self.vx * dt
@@ -126,20 +135,30 @@ class Mosquito:
         self.sprite.x = self.x
         self.sprite.y = self.y
 
+        # Angaben zur Position der Sprite-Mitte anpassen
+        self.center_x = self.x + self.sprite.width / 2
+        self.center_y = self.y + self.sprite.height / 2
+
 
 class Balloon:
     def __init__(self):
+        global balloon_radius
+
         self.x = random.randint(0, WINDOW_WIDTH)
-        self.y = -TARGET_RADIUS
         self.vy = random.uniform(10, 100)
-        self.sprite = pyglet.sprite.Sprite(BALLOON_TEXTURE, x=self.x, y=self.y, batch=batch)
+        self.sprite = pyglet.sprite.Sprite(BALLOON_TEXTURE, x=self.x, y=-100, batch=batch)
         self.sprite.scale = 0.2
+        self.y = -self.sprite.height
+        self.center_x = self.x + self.sprite.width / 2
+        self.center_y = self.y + self.sprite.height / 2
+        balloon_radius = max(self.sprite.width / 2, self.sprite.height / 2)
 
     def update(self, dt):
         self.y += self.vy * dt
         self.sprite.y = self.y
+        self.center_y = self.y + self.sprite.height / 2
 
-        if self.y > WINDOW_HEIGHT + TARGET_RADIUS:
+        if self.y > WINDOW_HEIGHT + self.sprite.height:
             balloons.remove(self)
 
 
@@ -254,13 +273,13 @@ def on_draw():
                 if finger_pos_pyglet is not None:
 
                     if FINGER_TRACKPOINT:
-                        cv2.circle(warped, finger_pos_cv2, TARGET_RADIUS, (0, 255, 0), -1)
+                        cv2.circle(warped, finger_pos_cv2, FINGER_TRACKPOINT_RADIUS, FINGER_TRACKPOINT_COLOR, -1)
                     
                     # Kollisionscheck Mücken
                     for mosquito in mosquitos:
-                        distance = np.linalg.norm(np.array(finger_pos_pyglet) - np.array([mosquito.x, mosquito.y]))
+                        distance = np.linalg.norm(np.array(finger_pos_pyglet) - np.array([mosquito.center_x, mosquito.center_y]))
                         
-                        if distance < TARGET_RADIUS:
+                        if distance < mosquito_radius:
                             mosquito.sprite.delete()
                             mosquitos.remove(mosquito)
                             score += 1
@@ -268,9 +287,9 @@ def on_draw():
 
                     # Kollisionscheck Ballons
                     for balloon in balloons:
-                        distance = np.linalg.norm(np.array(finger_pos_pyglet) - np.array([balloon.x, balloon.y]))
+                        distance = np.linalg.norm(np.array(finger_pos_pyglet) - np.array([balloon.center_x, balloon.center_y]))
                         
-                        if distance < TARGET_RADIUS:
+                        if distance < balloon_radius:
                             balloon.sprite.delete()
                             balloons.remove(balloon)
                             health -= 1
